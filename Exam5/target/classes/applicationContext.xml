@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/tx 
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop 
+   		 http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+        ">
+
+	<context:annotation-config />
+
+	<context:component-scan base-package="com.imooc.mvcdemo">
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+
+
+	<!-- 引入项目配置文件 -->
+	<!-- 配置springJDBC Template -->
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:dbconfig.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="url" value="${url}"></property>
+		<property name="driverClassName" value="${driverClassName}"></property>
+		<property name="username" value="${username}"></property>
+		<property name="password" value="${password}"></property>
+	</bean>
+	<!-- jdbcTemplate -->
+	
+
+	<bean id="filmdao" class="com.imooc.mvcdemo.dao.impl.FilmDAOImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- bean definition & AOP specific configuration -->
+
+	<aop:config>
+		<aop:aspect id="log" ref="logging">
+			<aop:pointcut id="selectAll" expression="execution(* com.imooc.mvcdemo.dao.impl.*.*(..))" />
+			<aop:before pointcut-ref="selectAll" method="beforeAdvice" />
+			<aop:after pointcut-ref="selectAll" method="afterAdvice" />
+		</aop:aspect>
+	</aop:config>
+
+	<!-- Definition for student bean -->
+
+	<!-- Definition for logging aspect -->
+	<bean id="logging" class="com.hand.main.Logging" />
+	
+	<bean id="cStartEventHandler" 
+         class="com.hand.even.CStartEventHandler"/>
+
+   <bean id="cStopEventHandler" 
+         class="com.hand.even.CStopEventHandler"/>
+	
+
+</beans>
