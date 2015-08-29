@@ -1,0 +1,7 @@
+com\imooc\mvcdemo\dao\impl\FilmDAOImpl.class
+com\hand\main\MainApp.class
+com\hand\even\CStopEventHandler.class
+com\imooc\mvcdemo\dao\FilmDAO.class
+com\imooc\mvcdemo\model\Film.class
+com\hand\main\Logging.class
+com\hand\even\CStartEventHandler.class
